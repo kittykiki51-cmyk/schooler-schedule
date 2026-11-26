@@ -60,38 +60,6 @@ table{border-collapse:collapse;text-indent:0}
 .number-control{grid-template-columns:minmax(80px,130px) auto;align-items:center;gap:12px;display:grid}
 .number-control>span{color:var(--muted);font-size:14px}
 .schedule-heading{border-top:1px solid var(--line);margin-top:54px;padding-top:30px}
-.quick-fill{margin-top:22px;border:1px solid var(--line);border-radius:17px;background:#f8faf7}
-.quick-toggle{width:100%;min-height:56px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 18px;font-size:14px;font-weight:700;color:var(--ink);text-align:left;border-radius:17px}
-.quick-toggle small{display:block;color:var(--muted);font-size:12px;font-weight:400;margin-top:2px}
-.quick-toggle .chev{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent);font-size:16px;transition:transform .16s}
-.quick-toggle[aria-expanded=true] .chev{transform:rotate(45deg)}
-.quick-body{padding:4px 18px 20px;display:grid;gap:18px}
-.quick-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.quick-body .field input,.quick-body select{min-height:46px}
-.quick-body select{border:1px solid var(--line);width:100%;color:var(--ink);background:#fff;border-radius:13px;padding:0 12px;font:inherit;outline:none}
-.quick-body select:focus{border-color:var(--accent);box-shadow:rgba(36,89,71,.09) 0 0 0 4px}
-.seg{display:inline-flex;border:1px solid var(--line);border-radius:12px;background:#fff;padding:3px;gap:3px;width:max-content;max-width:100%}
-.seg label{position:relative}
-.seg input{position:absolute;opacity:0;inset:0}
-.seg span{display:block;padding:9px 14px;border-radius:9px;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer}
-.seg input:checked+span{background:var(--accent);color:#fff}
-.seg input:focus-visible+span,.chips input:focus-visible+span{outline:2px solid var(--accent);outline-offset:2px}
-.chips{display:flex;flex-wrap:wrap;gap:8px}
-.chips label{position:relative}
-.chips input{position:absolute;opacity:0;inset:0}
-.chips span{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:#fff;font-size:14px;font-weight:700;color:#444c46;cursor:pointer;transition:background .16s,color .16s,border-color .16s}
-.chips input:checked+span{background:var(--accent);border-color:var(--accent);color:#fff}
-.quick-sub{color:#444c46;font-size:13px;font-weight:700;margin-bottom:9px;display:block}
-.inline-num{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--muted);flex-wrap:wrap}
-.inline-num input{width:90px;min-height:46px;border:1px solid var(--line);border-radius:13px;padding:0 12px;background:#fff;font:inherit;color:var(--ink);outline:none}
-.inline-num input:focus{border-color:var(--accent);box-shadow:rgba(36,89,71,.09) 0 0 0 4px}
-.check{display:flex;align-items:center;gap:8px;font-size:13px;color:#444c46;cursor:pointer}
-.check input{width:18px;height:18px;accent-color:var(--accent)}
-.quick-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.quick-actions .primary-button{min-height:46px}
-.quick-actions .secondary-button{min-height:46px}
-.quick-msg{font-size:12px;line-height:1.6;color:var(--accent)}
-.quick-msg.is-error{color:var(--danger)}
 .lesson-grid{gap:10px;margin:24px 0 32px;display:grid}
 .lesson-row{border:1px solid var(--line);background:#fff;border-radius:17px;grid-template-columns:98px 1fr;align-items:center;gap:20px;padding:17px 18px;transition:transform .16s,border-color .16s,box-shadow .16s;display:grid}
 .lesson-row:focus-within{border-color:rgba(36,89,71,.55);transform:translateY(-1px);box-shadow:rgba(36,89,71,.08) 0 8px 24px}
@@ -169,11 +137,6 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   .schedule-heading{align-items:flex-end}
   .schedule-heading h2,.card-heading h2{font-size:21px}
   .lesson-row{grid-template-columns:58px minmax(0,1fr);gap:12px;padding:14px 12px}
-  .quick-row{grid-template-columns:minmax(0,1fr)}
-  .quick-body{padding:4px 14px 18px}
-  .quick-toggle{padding:0 14px}
-  .quick-actions .primary-button,.quick-actions .secondary-button{width:100%}
-  .lesson-number em{font-size:12px}
   .lesson-number{gap:2px;display:grid}
   .date-field{grid-template-columns:minmax(0,1fr);gap:7px}
   .date-field small{grid-column:1;margin-top:0}
@@ -236,49 +199,6 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
         <div>
           <span class="step-label">交付日期</span>
           <h2>安排 <span id="lessonCount2">10</span> 堂課程</h2>
-        </div>
-      </div>
-      <div class="quick-fill">
-        <button type="button" class="quick-toggle" id="quickToggle" aria-expanded="false" aria-controls="quickBody">
-          <span>快速排程<small>設定規則，一次填好所有堂次的日期</small></span>
-          <span class="chev" aria-hidden="true">+</span>
-        </button>
-        <div class="quick-body" id="quickBody" hidden>
-          <div class="quick-row">
-            <label class="field">
-              <span>第一堂日期</span>
-              <input type="date" id="qStart">
-            </label>
-            <label class="field">
-              <span>每次錄製</span>
-              <select id="qPer">
-                <option value="1">1 堂</option>
-                <option value="2">2 堂（同一天）</option>
-                <option value="3">3 堂（同一天）</option>
-              </select>
-            </label>
-          </div>
-          <div>
-            <span class="quick-sub">排程方式</span>
-            <div class="seg" role="radiogroup" aria-label="排程方式">
-              <label><input type="radio" name="qMode" value="week" checked><span>每週固定星期</span></label>
-              <label><input type="radio" name="qMode" value="interval"><span>每隔幾天</span></label>
-            </div>
-          </div>
-          <div id="qWeekBox">
-            <span class="quick-sub">錄製星期（可多選）</span>
-            <div class="chips" id="qDays"></div>
-          </div>
-          <div id="qIntervalBox" hidden>
-            <span class="quick-sub">間隔</span>
-            <div class="inline-num">每隔 <input type="number" id="qGap" min="1" max="60" value="7" inputmode="numeric" aria-label="間隔天數"> 天錄製一次</div>
-            <label class="check" style="margin-top:12px"><input type="checkbox" id="qSkipWeekend" checked>遇到週六、週日順延到週一</label>
-          </div>
-          <div class="quick-actions">
-            <button type="button" class="primary-button" id="qApply">填入 <span id="qCount">10</span> 堂日期</button>
-            <button type="button" class="secondary-button" id="qUndo" hidden>復原</button>
-          </div>
-          <div class="quick-msg" id="qMsg" role="status" aria-live="polite"></div>
         </div>
       </div>
       <div class="lesson-grid" id="lessonGrid"></div>
@@ -412,7 +332,6 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
     state.dates = Array.from({ length: h }, (_, i) => state.dates[i] ?? '');
     state.errors = {};
     renderLessons();
-    if (typeof syncQuick === 'function') syncQuick();
   });
   $('totalHours').addEventListener('blur', e => { e.target.value = state.hours; });
 
@@ -423,92 +342,6 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
     const err = t.value ? validateDate(t.value) : null;
     if (err) state.errors[i] = err; else delete state.errors[i];
     updateRowError(i);
-  });
-
-  /* ---------- 快速排程 ---------- */
-  const WD = ['日', '一', '二', '三', '四', '五', '六'];
-  const DAY_ORDER = [1, 2, 3, 4, 5, 6, 0];
-  $('qDays').innerHTML = DAY_ORDER.map(d => `<label><input type="checkbox" value="${d}" aria-label="星期${WD[d]}"><span>${WD[d]}</span></label>`).join('');
-  let undoDates = null;
-
-  const parseYMD = s => { const [y, m, d] = s.split('-').map(Number); return new Date(Date.UTC(y, m - 1, d)); };
-  const toYMD = dt => dt.toISOString().slice(0, 10);
-  const addD = (dt, n) => new Date(dt.getTime() + n * 86400000);
-  const fmtShort = s => { const dt = parseYMD(s); return `${dt.getUTCFullYear()}/${dt.getUTCMonth() + 1}/${dt.getUTCDate()}（${WD[dt.getUTCDay()]}）`; };
-
-  function qMode() { return document.querySelector('input[name="qMode"]:checked').value; }
-  function qMsg(text, isError) { const el = $('qMsg'); el.textContent = text; el.classList.toggle('is-error', !!isError); }
-  function syncQuick() {
-    $('qCount').textContent = state.hours;
-    const week = qMode() === 'week';
-    $('qWeekBox').hidden = !week;
-    $('qIntervalBox').hidden = week;
-  }
-
-  function generateDates() {
-    const start = $('qStart').value;
-    if (!start || validateDate(start)) return { error: '請先選擇第一堂日期。' };
-    const per = Number($('qPer').value) || 1;
-    const sessions = Math.ceil(state.hours / per);
-    const days = [];
-    let cur = parseYMD(start);
-    if (qMode() === 'week') {
-      const set = new Set([...document.querySelectorAll('#qDays input:checked')].map(i => Number(i.value)));
-      if (!set.size) return { error: '請至少選擇一個錄製星期。' };
-      let guard = 0;
-      while (days.length < sessions && guard++ < 3000) {
-        if (set.has(cur.getUTCDay())) days.push(toYMD(cur));
-        cur = addD(cur, 1);
-      }
-    } else {
-      const gap = Number.parseInt($('qGap').value, 10);
-      if (!Number.isFinite(gap) || gap < 1 || gap > 60) return { error: '間隔天數請填 1–60。' };
-      const skip = $('qSkipWeekend').checked;
-      for (let i = 0; i < sessions; i++) {
-        let d = cur;
-        if (skip) { while (d.getUTCDay() === 0 || d.getUTCDay() === 6) d = addD(d, 1); }
-        days.push(toYMD(d));
-        cur = addD(d, gap);
-      }
-    }
-    const out = [];
-    for (const d of days) for (let k = 0; k < per && out.length < state.hours; k++) out.push(d);
-    return { dates: out };
-  }
-
-  $('quickToggle').addEventListener('click', () => {
-    const open = $('quickToggle').getAttribute('aria-expanded') !== 'true';
-    $('quickToggle').setAttribute('aria-expanded', String(open));
-    $('quickBody').hidden = !open;
-    syncQuick();
-  });
-  document.querySelectorAll('input[name="qMode"]').forEach(r => r.addEventListener('change', () => { syncQuick(); qMsg(''); }));
-  $('qStart').addEventListener('change', () => {
-    const v = $('qStart').value;
-    if (!v || validateDate(v)) return;
-    if (!document.querySelector('#qDays input:checked')) {
-      const box = document.querySelector(`#qDays input[value="${parseYMD(v).getUTCDay()}"]`);
-      if (box) box.checked = true;
-    }
-  });
-  $('qApply').addEventListener('click', () => {
-    const r = generateDates();
-    if (r.error) { qMsg(r.error, true); return; }
-    undoDates = state.dates.slice();
-    state.dates = r.dates;
-    state.errors = {};
-    renderLessons();
-    $('qUndo').hidden = false;
-    qMsg(`已填入第 1–${state.hours} 堂：${fmtShort(r.dates[0])} 至 ${fmtShort(r.dates[r.dates.length - 1])}。國定假日不會自動略過，請再檢查並個別調整。`);
-  });
-  $('qUndo').addEventListener('click', () => {
-    if (!undoDates) return;
-    state.dates = Array.from({ length: state.hours }, (_, i) => undoDates[i] ?? '');
-    state.errors = {};
-    undoDates = null;
-    renderLessons();
-    $('qUndo').hidden = true;
-    qMsg('已復原為套用前的日期。');
   });
 
   function setSubmitting(on) {
