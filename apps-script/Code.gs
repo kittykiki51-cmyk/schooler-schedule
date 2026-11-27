@@ -4,7 +4,7 @@
  *
  * 寫入規則（依現有資料比對）：
  *  - 課程總表：每次送出新增一列，課程狀態預設「待開始」、來源「網站」
- *  - 堂次排程：每堂一列，檢核狀態預設「尚未檢核」
+ *  - 堂次排程：每堂一列（堂次從 0 起算，共「總時數 + 1」堂），檢核狀態預設「尚未檢核」
  *  - 工作檢核日：交付日的下一個工作日；交付日為週五時，取第 3 個工作日
  *    （跳過週六、週日與「國定假日」分頁中「是否停班 = 是」的日期）
  */
@@ -15,8 +15,16 @@ const SHEET_COURSES = '課程總表';
 const SHEET_LESSONS = '堂次排程';
 const SHEET_HOLIDAYS = '國定假日';
 
+const SITE_URL = 'https://kittykiki51-cmyk.github.io/schooler-schedule/';
+
+/** 舊網址：引導到 GitHub Pages 網站 */
 function doGet() {
-  return HtmlService.createHtmlOutputFromFile('Index')
+  return HtmlService.createHtmlOutput(
+    '<div style="font-family:sans-serif;max-width:480px;margin:80px auto;padding:0 20px;line-height:1.7;color:#1c211d">' +
+    '<h2 style="margin:0 0 12px">Schooler 課程錄製排程已搬家</h2>' +
+    '<p style="margin:0 0 20px;color:#687069">請改用新網址填寫排程：</p>' +
+    '<a href="' + SITE_URL + '" target="_top" style="display:inline-block;background:#245947;color:#fff;padding:12px 20px;border-radius:12px;text-decoration:none;font-weight:700">前往填寫 →</a>' +
+    '<p style="margin-top:20px;font-size:13px;color:#687069;word-break:break-all">' + SITE_URL + '</p></div>')
     .setTitle('Schooler｜課程錄製排程')
     .addMetaTag('viewport', 'width=device-width, initial-scale=1');
 }
@@ -48,7 +56,8 @@ function submitSchedule(p) {
 
     if (!teacherName || !courseName) return fail_('請完成所有必填欄位，再送出排程。');
     if (!Number.isInteger(totalHours) || totalHours < 1 || totalHours > 60) return fail_('課程總時數需為 1–60 的整數。');
-    if (dates.length !== totalHours) return fail_('交付日期數量與堂數不符，請重新整理後再試。');
+    const lessonCount = totalHours + 1; // 第 0 堂起算
+    if (dates.length !== lessonCount) return fail_('交付日期數量與堂數不符，請重新整理後再試。');
     for (const d of dates) if (!isValidDate_(d)) return fail_('請選擇有效日期。');
 
     // 防止重複送出（同一個 submissionKey 6 小時內只寫入一次）
@@ -79,7 +88,7 @@ function submitSchedule(p) {
 
       // 課程總表
       const courseRow = [
-        scheduleId, now, safeText_(teacherName), safeText_(courseName), totalHours, totalHours,
+        scheduleId, now, safeText_(teacherName), safeText_(courseName), totalHours, lessonCount,
         toNoon_(sorted[0]), toNoon_(sorted[sorted.length - 1]),
         '待開始', safeText_(notes), '網站', now
       ];
@@ -88,7 +97,7 @@ function submitSchedule(p) {
 
       // 堂次排程
       const lessonRows = dates.map((d, i) => [
-        scheduleId, safeText_(teacherName), safeText_(courseName), i + 1,
+        scheduleId, safeText_(teacherName), safeText_(courseName), i,
         dateObjs[i], toNoon_(checkDate_(d, holidays)),
         '', '尚未檢核', '', '', now
       ]);

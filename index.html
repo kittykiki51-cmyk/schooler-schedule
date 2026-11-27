@@ -193,12 +193,12 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
           <input type="number" id="totalHours" min="1" max="60" step="1" inputmode="numeric" value="10" required>
           <span>小時</span>
         </div>
-        <small>每 1 小時視為 1 堂，本課程共 <span id="lessonCount">10</span> 堂</small>
+        <small>每 1 小時視為 1 堂，從第 0 堂起算，本課程共 <span id="lessonCount">11</span> 堂（第 0–<span id="lastLesson">10</span> 堂）</small>
       </label>
       <div class="schedule-heading">
         <div>
           <span class="step-label">交付日期</span>
-          <h2>安排 <span id="lessonCount2">10</span> 堂課程</h2>
+          <h2>安排 <span id="lessonCount2">11</span> 堂課程</h2>
         </div>
       </div>
       <div class="lesson-grid" id="lessonGrid"></div>
@@ -279,7 +279,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 <script>
 {
   const $ = id => document.getElementById(id);
-  const state = { hours: 10, dates: Array(10).fill(''), errors: {}, result: null, submitting: false, pdfBusy: false, submission: { fingerprint: '', key: '' } };
+  const state = { hours: 10, dates: Array(11).fill(''), errors: {}, result: null, submitting: false, pdfBusy: false, submission: { fingerprint: '', key: '' } };
 
   function validateDate(v) {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(v)) return '請選擇有效日期';
@@ -300,14 +300,15 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   }
 
   function renderLessons() {
-    $('lessonCount').textContent = state.hours;
-    $('lessonCount2').textContent = state.hours;
+    $('lessonCount').textContent = state.hours + 1;
+    $('lessonCount2').textContent = state.hours + 1;
+    $('lastLesson').textContent = state.hours;
     $('lessonGrid').innerHTML = state.dates.map((v, i) => `
       <label class="lesson-row${state.errors[i] ? ' has-error' : ''}" data-i="${i}">
-        <span class="lesson-number"><b>${String(i + 1).padStart(2, '0')}</b><em>第 ${i + 1} 堂</em></span>
+        <span class="lesson-number"><b>${String(i).padStart(2, '0')}</b><em>第 ${i} 堂</em></span>
         <span class="date-field">
           <span>預計交付日期</span>
-          <input type="date" id="date-${i}" aria-label="第 ${i + 1} 堂預計交付日期" value="${esc(v)}" required>
+          <input type="date" id="date-${i}" aria-label="第 ${i} 堂預計交付日期" value="${esc(v)}" required>
           ${state.errors[i] ? `<small role="alert">${esc(state.errors[i])}</small>` : ''}
         </span>
       </label>`).join('');
@@ -329,7 +330,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
     const n = Number.parseInt(e.target.value, 10);
     const h = Number.isFinite(n) ? Math.min(60, Math.max(1, n)) : 1;
     state.hours = h;
-    state.dates = Array.from({ length: h }, (_, i) => state.dates[i] ?? '');
+    state.dates = Array.from({ length: h + 1 }, (_, i) => state.dates[i] ?? '');
     state.errors = {};
     renderLessons();
   });
@@ -408,9 +409,9 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 
   function showResult() {
     const r = state.result;
-    const vals = { teacherName: r.teacherName, courseName: r.courseName, lessons: `${r.totalHours} 堂`, hours: `${r.totalHours} 小時`, scheduleId: r.scheduleId, createdAt: r.createdAt, notes: r.notes };
+    const vals = { teacherName: r.teacherName, courseName: r.courseName, lessons: `${r.totalHours + 1} 堂（第 0–${r.totalHours} 堂）`, hours: `${r.totalHours} 小時`, scheduleId: r.scheduleId, createdAt: r.createdAt, notes: r.notes };
     document.querySelectorAll('#successView [data-f]').forEach(el => { el.textContent = vals[el.dataset.f] ?? ''; });
-    const rows = r.dates.map((d, i) => `<tr><td>第 ${i + 1} 堂</td><td>${esc(formatDate(d))}</td></tr>`).join('');
+    const rows = r.dates.map((d, i) => `<tr><td>第 ${i} 堂</td><td>${esc(formatDate(d))}</td></tr>`).join('');
     $('resultRows').innerHTML = rows;
     $('pdfRows').innerHTML = rows;
     $('pdfNote').hidden = !r.notes;
